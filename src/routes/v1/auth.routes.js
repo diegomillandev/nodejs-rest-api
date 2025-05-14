@@ -22,6 +22,11 @@ router.get(
 );
 
 // Logout route
-router.get("/logout", AuthController.logout);
+router.get(
+  "/logout",
+  validateTokenInWhitelist,
+  verifyAuthToken,
+  AuthController.logout
+);
 
 export default router;

@@ -89,8 +89,8 @@ export class AuthController {
 
   static logout = async (req, res) => {
     try {
-      // Logout logic here
-      res.status(200).json({ message: "User logged out successfully" });
+      await req.token.deleteOne();
+      res.status(200).json({ message: "Logged out successfully" });
     } catch (error) {
       res.status(500).json({ error: "Internal server error" });
     }

@@ -24,6 +24,8 @@ export const validateTokenInWhitelist = async (req, res, next) => {
       return res.status(401).json({ message: "Revoked Token" });
     }
 
+    req.token = validateToken;
+
     next();
   } catch (error) {
     res.status(401).json({ message: "Invalid Token" });
