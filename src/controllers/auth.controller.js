@@ -73,6 +73,14 @@ export class AuthController {
 
       // Generate JWT token (not implemented in this example)
       const token = generateJWT(user._id);
+
+      // Check if token already exists
+      const existingToken = await Token.findOne({ userId: user._id });
+
+      if (existingToken) {
+        await existingToken.deleteOne();
+      }
+
       const newToken = new Token({
         userId: user._id,
         token,
