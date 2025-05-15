@@ -6,6 +6,7 @@ export const corsConfig = {
 
     if (process.argv[2] === "--api") {
       whitelist.push(undefined);
+      whitelist.push("http://localhost:4000");
     }
     if (whitelist.includes(origin)) {
       callback(null, true);
