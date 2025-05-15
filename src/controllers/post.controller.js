@@ -1,12 +1,12 @@
 import Post from "../models/post.model.js";
-import { createPostSchema } from "../validations/post.validation.js";
+import { postSchema } from "../validations/post.validation.js";
 
 export class PostController {
   static createPost = async (req, res) => {
     try {
       const postData = req.body;
 
-      const { success, error, data } = createPostSchema.safeParse(postData);
+      const { success, error, data } = postSchema.safeParse(postData);
 
       if (!success) {
         const errorMessages = error.errors.map((err) => {
@@ -34,25 +34,40 @@ export class PostController {
 
   static getAllPosts = async (req, res) => {
     try {
-      // Logic to get all posts
-      res.status(200).json({ message: "Posts retrieved successfully" });
+      const posts = await Post.find({ userId: req.user._id.toString() });
+
+      res.status(200).json(posts);
     } catch (error) {
       res.status(500).json({ error: "Internal server error" });
     }
   };
 
   static getPostById = async (req, res) => {
-    try {
-      // Logic to get a post by ID
-      res.status(200).json({ message: "Post retrieved successfully" });
-    } catch (error) {
-      res.status(500).json({ error: "Internal server error" });
-    }
+    res.status(200).json(req.post);
   };
 
   static updatePostById = async (req, res) => {
     try {
-      // Logic to update a post
+      const postData = req.body;
+
+      const { success, error, data } = postSchema.safeParse(postData);
+
+      if (!success) {
+        const errorMessages = error.errors.map((err) => {
+          return {
+            field: err.path.join("."),
+            message: err.message,
+          };
+        });
+
+        return res.status(400).json(errorMessages);
+      }
+
+      req.post.title = data.title;
+      req.post.content = data.content;
+      req.post.status = data.status;
+
+      await req.post.save();
       res.status(200).json({ message: "Post updated successfully" });
     } catch (error) {
       res.status(500).json({ error: "Internal server error" });
@@ -61,7 +76,7 @@ export class PostController {
 
   static deletePostById = async (req, res) => {
     try {
-      // Logic to delete a post
+      await req.post.deleteOne();
       res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: "Internal server error" });

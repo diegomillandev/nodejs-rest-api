@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const createPostSchema = z.object({
+export const postSchema = z.object({
   title: z
     .string()
     .min(5, { message: "Title must be at least 5 characters" })

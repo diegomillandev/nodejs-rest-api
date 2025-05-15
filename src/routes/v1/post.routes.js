@@ -4,6 +4,7 @@ import {
   validateTokenInWhitelist,
   verifyAuthToken,
 } from "../../middlewares/auth.middleware.js";
+import { validatePost } from "../../middlewares/post.middleware.js";
 
 const router = Router();
 
@@ -11,6 +12,8 @@ router.use(validateTokenInWhitelist, verifyAuthToken);
 
 router.post("/", PostController.createPost);
 router.get("/", PostController.getAllPosts);
+
+router.param("id", validatePost);
 router.get("/:id", PostController.getPostById);
 router.put("/:id", PostController.updatePostById);
 router.delete("/:id", PostController.deletePostById);
